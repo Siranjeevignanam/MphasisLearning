@@ -1,0 +1,65 @@
+Git
+----
+
+* Git is a global information tracker mainly used for version control and continuous integration.
+
+* The structure of the Git is...
+    1. central repository which is called git hub where the continuous integration can be done.
+    2. Local repository which will be on the local system for unit development , we refer this as Git.
+    3. File structure which will be in the local system where we actually develop the code.
+    4. The difference between folder structure and git is,
+          Git-It is another folder by the name ".git" , normally we should not interact with the .git folder directory. We can interact with git commands
+    * Important note:
+       a. Whenever we use the git command our folder should be in .git folder, if not command won't work.)
+       b. Nested .git folder is not recommended.
+    5. Whenever the code is done, the code will be in the local folder This local folder should be under .git folder.
+    6. Once the code is developed inside the folder structure, the code should be transferred to the local repository by using git commands. From local repository we can integrate our code to central repository.
+    7. Taking the code from folders to local repository is called commit.
+    8. Taking code from local repository to central repository is called push.
+    9. Master/main branch will be kept for production level code
+   10. Dev branch- The branch where code will be used for development 
+   11. From dev branch every member will create a feature branch, and this is what feature they are developing should be named under that branch.
+   12. Developed code will go to the feature branch, integrated code will go to the dev branch, using merge. Merge can also be termed as pull request.
+  (Note: Once the code is merged, we should remove the feature branches, else we will get merge conflicts, also delete the feature cloned folder in the local system.)
+   13. From folder to local repository  we follow the following commands.
+          git add-Staging command ...the files that are done changes will be marked for commit, In other words the files that are staged can only be committed
+          git commit- the staged files will be moved to local repository.
+          git clone- to create a local repository we will use a command called clone. // git init + git remote = git clone
+   *Important note:
+     Once we clone, before we edit the code make sure you are in the respective branches, by default once we clone control will be in the master branch. Using git checkout or git switch we should change the branch while pushing it to the  
+     respective branches only. When push is 
+   14. Folder to local-commit, local to central-push
+
+
+1.) Open GitHub(personal)
+2.) Click on new to create new repository/project.
+3.) Give proper name and description.
+4.) Add read.md file compulsory, since blank repositories can't be cloned.
+5.) create the project 
+6.) Add team members using collaborators in setting(click on add people and give public git repo name).Once the member accepts the request will be able to see the project on repository section.
+7.) Go to repository and copy https clone url.
+8.) Go to your selected folder and right click and select git bash.
+9.) Once git bash is open, type git clone https url.
+10.) set global settings once for git config --global user.name and git config --global user.email
+11.) Get into the folder where we need to clone, then give command git clone url to clone the repository.
+12.) Type the command ls and get into the repository folder using cd command.
+13.) Check the branch at which you are at using git branch command.
+14.) Get into the respective feature branch before editing the file using git switch branch_name command. If in case the code was edited in the wrong branch we have to use the command git stash to revert to clean working directory.
+15.) Edit/Develop the code.
+16.) Do the staging by command git add
+17.) Commit the code to local repository using commit -m command.
+18.) Push the code to central repository using git push origin branch_name command.(if forbidden 403 error comes, delete previous credentials by going to the control panel in windows credentials).
+19.) To give new credentials push the code through command window rather than git bash. Select web credentials and give your credentials. 
+20.) If the code still couldn't be pushed due to conflict, means if there is change in central repository before we push so we can use git pull origin branch_name and then give push origin branch name.
+21.) Merge feature branch with dev branch inside the git hub ,create a pull request. Select to which branch to merge, delete the feature branch after merge.
+22.) Note- We can create a preview by giving a review your id. If the reviewer approves your code, you can confirm the merge.
+
+
+Q: Once we do the push, the code will be integrated? 
+Ans: No, To integrate multiple codes(if multiple team members are working on the code) we have to do merge the branches .Means, when we create a project we should also create branches for the project.
+
+
+**Note**
+ Design a branching strategy for your project
+ Difference between pull and rebase
+ if the branch is not switched and the code is edited, how do you rework
