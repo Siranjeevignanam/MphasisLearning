@@ -62,4 +62,4 @@ Ans: No, To integrate multiple codes(if multiple team members are working on the
 **Note**
  Design a branching strategy for your project
  Difference between pull and rebase
- if the branch is not switched and the code is edited, how do you rework
+ if the branch is not switched and the code is edited, how do you rework--Git stash,git switch branch_name,git stash pop...stash allows us to temporarily store the changes in a safe box and gives it back when stash pop command used.
