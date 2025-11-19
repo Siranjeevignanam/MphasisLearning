@@ -1,0 +1,286 @@
+create database MphasisLearning;
+show databases;
+use mphasislearning;
+
+create table student(
+roll int, constraint pk1 primary key(roll),
+fname varchar(32) not null,
+lname varchar(32),
+dob date not null,
+gender varchar(1) default 'M' check (gender in ('M','F'))
+);
+alter table student add column contactno int;
+alter table student add constraint ak2 check (contactno between 100 and 500);
+update student set contactno=405 where roll=8; 
+alter table student drop column contactno;
+alter table student rename column fname to firstmame;
+
+select * from student;
+desc student;
+
+
+
+
+set autocommit =0;
+insert into student (roll,fname,lname,dob,gender) values (1,'Rahul','KL','1992-04-18','M'),(2,'Jaiswal','Yashasvi','1992-04-18','M');
+insert into student (roll,fname,lname,dob,gender) values (2,'Jaiswal','Yashasvi','1992-04-18','M'),
+                                                         (3,'Rishabh','Pant','1993-10-04','M'),
+                                                         (4,'Bumrah','Jasprit','1992-12-06','M');
+insert into student (roll,fname,lname,dob,gender) values (5,'Ruturaj','Gaikwad','1997-01-31','M'),
+                                                         (6,'Sanju','Samson','1994-11-11','M'),
+                                                         (7,'MS','D','1981-07-07','M'),
+                                                         (8,'Ravindra','Jadeja','1988-12-06','M'),
+                                                         (9,'Shivam','Dube','1993-06-25','M'),
+                                                         (10,'Jos','Buttler','1989-08-17','M');
+
+show tables;
+select * from student;
+create table statetable
+(
+stateid varchar(10) primary key,
+statename varchar(20) not null
+);
+
+create table citytable (
+cityid varchar (10) primary key,
+stateid varchar(20), foreign key(stateid) references statetable(stateid),
+cityname varchar(20) not null);
+
+
+insert into statetable VALUES ('501','TN'),
+('502','KL'),
+('503','KA'),('504','AP'),('505','TG'),('506','MAH'),('507','ODS');
+
+INSERT INTO citytable values ('C01','501','CHENNAI'),
+('C02','501','COIMBATORE'),('C08','502','KOCHIN'),
+('C03','502','THIRUVANANTHAPURAM'),
+('C04','503','BANGALORE'),
+('C05','503','MYSORE'),
+('C06','504','TIRUPATI'),
+('C07','504','NELLUR');
+
+CREATE TABLE connectiontable (
+id int primary key,
+roll int references student(roll),
+cityid varchar(20),foreign key(cityid) references citytable(cityid));
+
+insert into connectiontable values (1001,1,'C01'),
+(100,3,'C03'),(1003,5,'C05'),(1004,7,'C06'),(1005,9,'C07'),(1006,11,'C03');
+
+
+CREATE TABLE SUBJECTTABLE( subid varchar(10) primary key,
+subject varchar(25) not null);
+
+insert into subjecttable VALUES 
+('E01','ENGLISH LITERATURE'),('E02','TAMIL LITERATURE'),('E03','DSP'),('E04','DIGITAL ELECTRONICS'),
+('E05','DBMS'),('E06','DATA STRUCTURES'),('E07','ENGG.PHYSICS'),('E08','ENVIRONMENTAL SCIENCE');
+
+CREATE TABLE MARKSTABLE (ID INT UNIQUE NOT NULL,
+ROLL INT references STUDENT(ROLL),
+TESTNUM INT NOT NULL,
+SUBJECTID VARCHAR(20) ,FOREIGN KEY (SUBJECTID) REFERENCES SUBJECTTABLE(SUBID),
+MARKS INT CHECK(MARKS BETWEEN 0 AND 100),PRIMARY KEY (ROLL,TESTNUM,SUBJECTID));
+
+INSERT INTO MARKSTABLE VALUES (
+1,1,21,'E01',80),(
+2,3,22,'E03',88),(
+3,5,23,'E06',98),(
+4,1,24,'E04',75),(
+5,1,25,'E05',79),(
+6,1,26,'E02',91),(
+7,1,27,'E07',95),(
+8,1,28,'E08',67);
+DELETE FROM MARKSTABLE;
+
+INSERT INTO MARKSTABLE VALUES (
+1,1,21,'E01',80),(
+2,3,22,'E03',88),(
+3,5,21,'E06',98),(
+4,1,22,'E04',75),(
+5,4,21,'E05',79),(
+6,1,23,'E02',91),(
+7,7,21,'E07',95),(
+8,8,23,'E08',67);
+SELECT * FROM MARKSTABLE;
+
+SET SQL_SAFE_UPDATES=0;
+DELETE FROM MARKSTABLE;
+rollback;
+
+select roll,firstname,dob,cityname from student natural join connectiontable natural join citytable join statetable;
+
+select a.roll,a.firstname,a.dob,b.cityname,c.statename from student a,connectiontable d,citytable b,statetable c where (a.roll=d.roll and d.cityid=b.cityid and b.stateid=c.stateid);
+
+select s.firstname,s.roll, m.testnum from student s inner join markstable m on s.roll=m.roll where testnum !=21;
+
+ select s.roll,s.firstname from student s inner join connectiontable c on s.roll=c.roll inner join citytable t on c.cityid=t.cityid where cityname is null;
+ 
+select c.cityname , count(ct.cityid) from citytable c left join connectiontable ct on ct.cityid=c.cityid group by cityname;
+select * from markstable;
+
+create user 'Siranjeevi251' identified by 'root@39';
+grant select on student to Siranjeevi251;
+
+
+-- start of day 3 --
+
+-- left outer join --
+select a.stateid,a.statename,b.cityid,b.cityname from statetable a left outer join citytable b on a.stateid=b.stateid where b.stateid is null;
+
+-- Equi join--
+select a.stateid,a.statename,b.cityid,b.cityname from statetable a inner join citytable b on a.stateid=b.stateid where b.stateid = '502';
+
+-- Non equi join--
+
+select a.stateid,a.statename,b.cityid,b.cityname from statetable a inner join citytable b on a.stateid=b.stateid where b.stateid <> '503';
+
+-- Inbuilt function --
+-- types- single row,multple row functions --
+
+select upper(firstname) fname from student;
+select round(1234.6,0);
+
+select count(cityid) ncity, stateid from citytable group by stateid;
+
+-- answer for 2nd question --
+select a.stateid,a.statename, ifnull(b.ncity,'City not allocated')from statetable a left outer join (select count(cityid) ncity, stateid from citytable group by stateid) b on a.stateid=b.stateid;
+
+
+-- to show number of students count--
+select count(roll) nstudent , cityid from connectiontable group by cityid;
+
+
+-- to show number of students count  from each city or show no student--
+select a.cityid,a.cityname, ifnull(nstudent,'No student from this city') studentscount from citytable a left outer join (select count(roll) nstudent , cityid from connectiontable group by cityid) b on (a.cityid=b.cityid);
+
+
+-- to display students without citites--
+select a.roll,a.firstname,b.cityid from student a left outer join connectiontable b on (a.roll=b.roll) where b.cityid is null;
+
+-- to show different subjects of a student--
+select a.roll,a.firstname,b.subjectid,c.subject from student a inner join markstable b on (a.roll=b.roll) inner join subjecttable c on(b.subjectid=c.subid);
+
+
+-- self join--
+create table employee ( eid int primary key,ename varchar(30) not null,mid int references employee(empid));
+desc employee;
+
+
+insert into employee values ( 101,'Tharun',101),
+( 102,'Shantosh',101),
+( 103,'Siranjeevi',101),
+( 104,'Sooraj',101),
+( 105,'Kavin',102),
+( 106,'Hemananth',103);
+insert into employee values ( 107,'Shibu Guhan',105);
+insert into employee values ( 108,'Guhan',106);
+-- shows emp and respective managers --
+select b.ename as employee, a.ename as manager from employee a inner join employee b on a.eid=b.mid;
+
+-- employees per manager--
+select mid,count(mid) nemp from employee group by mid;
+
+select a.eid,a.ename,b.nemp from employee a inner join(select mid,count(mid) nemp from employee group by mid) b on a.eid=b.mid;
+
+-- subquery --
+-- to list students who stay n bamglore --
+select * from citytABLE;
+
+select roll,firstname from student where roll in (select roll from connectiontable where cityid in(select cityid from citytable where cityname='CHENNAI') );
+--
+SELECT ROLL,FIRSTNAME FROM STUDENT WHERE ROLL IN ( SELECT ROLL FROM MARKSTABLE WHERE MARKS>70 AND TESTNUM=21);
+
+SELECT ROLL,FIRSTNAME FROM STUDENT WHERE ROLL IN ( SELECT ROLL FROM MARKSTABLE GROUP BY ROLL HAVING AVG(MARKS)>70 );
+
+-- TO LIST STUDENT DETAILS,MARKS AVERAGE GREATER THAN 70 BY TEST WISE--
+
+SELECT ROLL,AVG(MARKS) AV,TESTNUM FROM MARKSTABLE GROUP BY ROLL,TESTNUM HAVING AVG(MARKS)>70 ORDER BY ROLL;
+
+SELECT A.ROLL,A.FIRSTNAME,B.AV,B.TESTNUM FROM STUDENT A INNER JOIN (SELECT ROLL,AVG(MARKS) AV,TESTNUM FROM MARKSTABLE GROUP BY ROLL,TESTNUM HAVING AVG(MARKS)>70)B ON A.ROLL=B.ROLL;
+
+SELECT A.ROLL,A.FIRSTNAME,B.AV, CASE B.AV 
+WHEN B.AV > 90 THEN 'DISTNICTION'
+WHEN B.AV>80 THEN 'FIRST CLASS'
+WHEN B.AV>70 THEN 'PASS'
+ELSE 'FAIL'
+END AS RESULT FROM STUDENT A INNER JOIN (SELECT ROLL ,AVG(MARKS) AV FROM MARKSTABLE
+WHERE TESTNUM=1
+GROUP BY ROLL) B ON (A.ROLL=B.ROLL);
+
+
+SELECT ROLL,FIRSTNAME FROM STUDENT WHERE MONTH(DOB) = '12' ;
+select *,TIMESTAMPDIFF(YEAR,DOB,CURDATE()) AGE FROM STUDENT WHERE MONTH(DOB)='12';
+
+-- VIEW --
+create view stable as select * from student;
+select *from student;
+select * from stable;
+ insert into stable values (1013, 'Rahane','A','1988-06-12','M');
+ create view managerone as select roll,firstname from student where roll between 1 and 6  with check option;
+ select * from managerone;
+ delete from stable where roll=2;
+ drop view stable;
+ 
+ -- Index --
+ 
+ create index ifname on student (firstname);
+ select * from student where firstname= 'Rahul';
+
+
+delimiter //
+create procedure summer(in a int,in b int,out c int)
+begin
+set c:=a+b;
+end 
+//
+
+call summer(1000,200,@x);
+select @x;
+
+-- create a procedure to create,update for user data
+delimiter ;
+ 
+delimiter //
+create function result(In a int)
+return varchar(30) deterministic 
+begin
+declare output varchar(30);
+if a> 90 THEN set output='DISTNICTION'
+elif a>80 THEN set output = 'FIRST CLASS'
+elif a THEN set output='PASS'
+ELSE set output='FAIL'
+end if;
+return output;
+end //
+
+delimiter ;
+
+select a.rollno,s.firstname,b.av,results(b.av) as result from student a inner join (select roll,avg(marks) av from markstable where testnum =1
+group by roll)b on (a.roll=b.roll);
+
+
+
+-- create a trigger --
+create table sbackup as select * from student where roll is null;
+show tables;
+
+alter table sbackup add column (uname varchar(30),dt date);
+desc sbackup;
+
+delimiter //
+create trigger yestrigger after delete on student for each row 
+begin
+insert into sbackup values(old.roll, old.dob,old.gender,old.firstname,old.lname,user(),curdate());
+
+
+end //
+
+delimiter ;
+drop trigger yestrigger;
+delete from student where roll=3;
+select user 
+
+
+
+
+ 
