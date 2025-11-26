@@ -404,3 +404,102 @@ group by m.meterId, m.last_Reading_Date
 
 order by total_Usage desc;
  
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+To set data 
+create database mini_project;
+use mini_project;
+
+create table customer
+(
+customerId int primary key,
+customer_Name varchar(25) not null,
+customer_Address varchar(100) not null,
+phone_No varchar(10) not null,
+email varchar(30) not null unique key
+);
+
+-- yet to insert--
+INSERT INTO customer VALUES
+(213, "Guhan", "12, Anna Nagar, Madurai", 9865321478, "Guhans@gmail.com"),
+(215, "Hemananth", "45, Gandhi Road, Salem", 9889561478, "somu@gmail.com"),
+(221, "Kavin", "78, VOC Street, Tirunelveli", 7855321478, "sasi@gmail.com"),
+(224, "Kishore", "102, MGR Nagar, Trichy", 9865321710, "vasi@gmail.com"),
+(251, "Siranjeevi", "56, Kamarajar Salai, Thanjavur", 8965321478, "sj251@gmail.com"),
+(252, "Sooraj Krishna", "89, Bharathi Street, Erode", 9832161478, "soorath@gmail.com"),
+(605, "Shibu George", "33, Periyar Nagar, Coimbatore", 9865321878, "shibey@gmail.com");
+
+
+
+create table meter
+(
+meterId int primary key,
+customerId int,
+installation_date date not null,
+last_reading_date date not null,
+
+foreign key (customerId) references customer(customerId) on delete cascade
+);
+
+insert into meter values (120,213,'2021-09-22','2025-11-03'),
+(121,215,'2019-06-07','2022-07-07'),
+(122,221,'2023-01-19','2025-10-27'),
+(123,224,'2021-05-05','2021-06-13'),
+(124,251,'2018-04-06','2025-05-15'),
+(125,252,'2024-02-09','2024-01-21'),
+(126,605,'2022-10-11','2020-11-01');
+
+create table electricity_Usage
+(
+
+usageId int primary key,
+meterId int,
+reading_date date not null,
+usage_units numeric(7,3) check (usage_units>0),
+foreign key (meterId) references meter(meterId) on delete cascade
+);
+
+insert into  electricity_usage values
+(320,120,'2025-09-09',535.67),
+(321,121,'2025-10-27',134.90),
+(322,122,'2025-11-13',728.86),
+(323,123,'2025-07-19',112.36),
+(324,124,'2025-05-30',498.36),
+(325,125,'2025-07-24',520.21),
+(326,126,'2025-06-12',178.25);
+
+create table bill
+(
+billId int primary key,
+meterId int,
+bill_date date not null,
+amount_due numeric(8,3) check (amount_due>0),
+paid int default 0 check(paid in(0 , 1)),
+due_date date not null,
+foreign key (meterId) references meter(meterId) on delete cascade
+);
+-- drop table bill;
+-- ALTER TABLE bill
+-- MODIFY COLUMN amount_due numeric(8,3) CHECK (amount_due > 0);
+insert into bill values 
+
+(420, 120, '2025-09-01', 450.75, 0, '2025-09-15'),
+(421, 121, '2024-11-02', 320.50, 1, '2025-09-16'),
+(422, 123, '2024-07-03', 275.25, 0, '2025-09-17'),
+(423, 121, '2024-05-04', 510.00, 1, '2025-09-18'),
+(424, 124, '2025-01-05', 600.80, 0, '2025-09-19'),
+(425, 124, '2023-11-06', 350.40, 1, '2025-09-20'),
+(426, 125, '2025-04-07', 425.95, 0, '2025-09-21');
+
+
+
+
+
+
+create table payment
+(
+paymentId int primary key,
+billId int,
+payment_date date not null,
+amount_paid numeric (5,3) check(amount_paid>0),
+foreign key (billId) references bill(billId) on delete cascade
+);
