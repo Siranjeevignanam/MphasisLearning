@@ -405,7 +405,8 @@ group by m.meterId, m.last_Reading_Date
 order by total_Usage desc;
  
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-To set data 
+
+
 create database mini_project;
 use mini_project;
 
@@ -492,9 +493,6 @@ insert into bill values
 
 
 
-
-
-
 create table payment
 (
 paymentId int primary key,
@@ -503,3 +501,102 @@ payment_date date not null,
 amount_paid numeric (5,3) check(amount_paid>0),
 foreign key (billId) references bill(billId) on delete cascade
 );
+ALTER table payment modify column amount_paid numeric(8,3);
+
+INSERT INTO payment VALUES
+(510, 421, '2024-11-05', 320.500),   
+(511, 423, '2024-05-10', 510.000),  
+(512, 425, '2023-11-10', 350.400),   
+(513, 420, '2025-09-10', 200.000),   
+(514, 422, '2025-07-15', 150.000),   
+(515, 424, '2025-01-15', 300.400),   
+(516, 426, '2025-04-15', 200.950); 
+
+SELECT 
+    c.customerId,
+    c.customer_Name,
+    c.customer_Address,
+    c.phone_No,
+    c.email,
+
+    m.meterId,
+    m.installation_date,
+    m.last_reading_date,
+
+    e.usageId,
+    e.reading_date,
+    e.usage_units,
+
+    b.billId,
+    b.bill_date,
+    b.amount_due,
+    b.paid,
+    b.due_date,
+
+    p.paymentId,
+    p.payment_date,
+    p.amount_paid
+
+FROM customer c
+JOIN meter m ON c.customerId = m.customerId
+JOIN electricity_usage e ON m.meterId = e.meterId
+JOIN bill b ON m.meterId = b.meterId
+JOIN payment p ON b.billId = p.billId;
+
+--
+SELECT 
+    e.meterId,
+    SUM(e.usage_units) AS total_usage
+FROM electricity_usage e
+GROUP BY e.meterId
+HAVING total_usage > 200;
+--
+SELECT 
+    c.customerId,
+    c.customer_Name,
+    SUM(b.amount_due) AS total_unpaid_amount
+FROM customer c
+JOIN meter m ON c.customerId = m.customerId
+JOIN bill b ON m.meterId = b.meterId
+WHERE b.paid = 0
+GROUP BY c.customerId, c.customer_Name
+ORDER BY total_unpaid_amount DESC;
+
+--
+SELECT 
+    b.billId,
+    b.bill_date,
+    b.paid,
+    CASE 
+        WHEN b.paid = 1 THEN 'PAID'
+        ELSE 'UNPAID'
+    END AS payment_status
+FROM bill b
+ORDER BY b.bill_date;
+--
+
+SELECT 
+    c.customerId,
+    c.customer_Name,
+    c.customer_Address,
+    m.meterId,
+    m.installation_date
+FROM customer c
+JOIN meter m ON c.customerId = m.customerId
+WHERE m.installation_date > '2023-12-31';
+--
+SELECT 
+    m.meterId,
+    m.last_reading_date,
+    SUM(e.usage_units) AS total_usage
+FROM meter m
+JOIN electricity_usage e ON m.meterId = e.meterId
+GROUP BY m.meterId, m.last_reading_date
+ORDER BY total_usage DESC;
+
+
+
+
+
+
+
