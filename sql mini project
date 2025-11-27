@@ -606,11 +606,11 @@ use javaproject;
 
 create table addProperty (
 propertyId int primary key,
-baseValue int not null,
+baseValue int check(baseValue > 0),
  buildUpArea int not null,
-age int not null,
-isCity varchar(1) check(isCity in('Y' , 'N','y','n')),
-propertyTax double not null
+age int check(age > 0),
+isCity varchar(1) check(isCity in('Y','N','y','n')),
+propertyTax numeric(8,2)
 );
 select * from addProperty;
 select sum(propertyTax) from addProperty;
@@ -620,16 +620,15 @@ drop table addProperty;
 
 create table addVehicle(
 vehicleId int primary key,
-regNo int not null,
+regNo varchar(4) not null,
 brand varchar(25) not null,
-maxVelocity int not null,
-capacity int not null,
-vehicleType varchar(20) check(vehicleType in ("PETROL","DIESEL","CNG","LPG")),
-cost int not null,
-vehicleTax int not null
+maxVelocity int check(maxVelocity >120 and maxVelocity <300),
+capacity int check (capacity >=2 and capacity <=50),
+vehicleType varchar(20) check(vehicleType in ("PETROL","DIESEL","CNG","LPG","petrol","diesel","lpg","cng")),
+cost int not null check(cost>= 50000 and cost <= 1000000),
+vehicleTax numeric(8,2) not null
 
 
 );
 DROP TABLE addVehicle;
 select * from addVehicle;
-
