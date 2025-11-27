@@ -410,6 +410,13 @@ order by total_Usage desc;
 create database mini_project;
 use mini_project;
 
+drop table payment;
+drop table bill;
+drop table electricity_usage;
+drop table meter;
+drop table customer;
+
+
 create table customer
 (
 customerId int primary key,
@@ -486,10 +493,10 @@ insert into bill values
 (420, 120, '2025-09-01', 450.75, 0, '2025-09-15'),
 (421, 121, '2024-11-02', 320.50, 1, '2025-09-16'),
 (422, 123, '2024-07-03', 275.25, 0, '2025-09-17'),
-(423, 121, '2024-05-04', 510.00, 1, '2025-09-18'),
+(423, 122, '2024-05-04', 510.00, 1, '2025-09-18'),
 (424, 124, '2025-01-05', 600.80, 0, '2025-09-19'),
-(425, 124, '2023-11-06', 350.40, 1, '2025-09-20'),
-(426, 125, '2025-04-07', 425.95, 0, '2025-09-21');
+(425, 125, '2023-11-06', 350.40, 1, '2025-09-20'),
+(426, 126, '2025-04-07', 425.95, 0, '2025-09-21');
 
 
 
@@ -498,10 +505,10 @@ create table payment
 paymentId int primary key,
 billId int,
 payment_date date not null,
-amount_paid numeric (5,3) check(amount_paid>0),
+amount_paid numeric (8,3) check(amount_paid>0),
 foreign key (billId) references bill(billId) on delete cascade
 );
-ALTER table payment modify column amount_paid numeric(8,3);
+-- ALTER table payment modify column amount_paid numeric(8,3);
 
 INSERT INTO payment VALUES
 (510, 421, '2024-11-05', 320.500),   
@@ -593,10 +600,3 @@ FROM meter m
 JOIN electricity_usage e ON m.meterId = e.meterId
 GROUP BY m.meterId, m.last_reading_date
 ORDER BY total_usage DESC;
-
-
-
-
-
-
-
