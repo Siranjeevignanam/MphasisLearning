@@ -276,7 +276,7 @@ create database javaproject;
 use javaproject;
 
 create table addProperty (
-propertyId int primary key,
+propertyId int primary key auto_increment ,
 baseValue int check(baseValue > 0),
  buildUpArea int not null,
 age int check(age > 0),
@@ -290,8 +290,8 @@ set sql_safe_updates=0;
 drop table addProperty;
 
 create table addVehicle(
-vehicleId int primary key,
-regNo varchar(4) not null,
+vehicleId int primary key auto_increment ,
+regNo varchar(4) not null check(regNo not in("0000")),
 brand varchar(25) not null,
 maxVelocity int check(maxVelocity >120 and maxVelocity <300),
 capacity int check (capacity >=2 and capacity <=50),
@@ -303,3 +303,4 @@ vehicleTax numeric(8,2) not null
 );
 DROP TABLE addVehicle;
 select * from addVehicle;
+
