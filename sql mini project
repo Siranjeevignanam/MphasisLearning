@@ -89,324 +89,6 @@ foreign key (billId) references bill(billId) on delete cascade
 
 
 //////////////////////////////////////////////////////////////////////
-Tharun's code
-
-create database project1;
-
-use project1;
- 
-create table customer_Table(
-
-customerId int primary key,
-
-customer_Name varchar(20) not null,
-
-customer_Address varchar(50) not null,
-
-customer_Phone_Number varchar(10) not null,
-
-customer_Email varchar(50) unique not null
-
-);
- 
-drop table customer_Table;
- 
-insert into customer_Table values 
-
-(1,'Arun','76/B2 raja nagar Chennai','9876543212','Arun01@gmail.com'),
-
-(2,'Kumar','01/V1 Ram nagar Coimbatore','9465734731','Kumar341@gmail.com'),
-
-(3,'Priya','78/A2 Vijay nagar Madurai','9345272883','Priya451@gmail.com'),
-
-(4,'Sharma','65/S4 Nethaji nagar','9673417476','Sharma11@gmail.com'),
-
-(5,'John','101/ F2 Sivaji nagar','8965478791','John98761@gmail.com'),
-
-(6,'David','X22 Bala nagar namakkal','8625765488','David56231@gmail.com'),
-
-(7,'Ravi','G3 Siran nagar Koyambedu','6785656712','Ravi2k1@gmail.com'),
-
-(8,'Saran','H1/55 Aadhav Nagar Erode','7789437658','Sarank9101@gmail.com'),
-
-(9,'Kiran','J798 5 roads Salem','9781254628','Kirans21@gmail.com'),
-
-(10,'Rakesh','U1 shivaji street pallipalayam','7937625631','Rakesh892025@gmail.com');
- 
-create table meter_Table(
-
-meterId int primary key,
-
-customerId int,
-
-installation_Date date not null,
-
-last_Reading_Date date not null,
-
-foreign key (customerId) references customer_Table(customerId) on delete cascade 
-
-);
- 
-insert into meter_Table values
-
-(101,1,'2023-01-01','2023-02-01'),
-
-(102,2,'2023-01-21','2023-02-21'),
-
-(103,3,'2024-08-18','2024-09-18'),
-
-(104,4,'2022-12-07','2022-01-07'),
-
-(105,5,'2019-07-01','2019-08-02'),
-
-(106,6,'2021-03-14','2021-04-14'),
-
-(107,7,'2025-09-06','2025-10-06'),
-
-(108,8,'2020-01-28','2020-02-28'),
-
-(109,9,'2022-02-19','2022-03-19'),
-
-(110,10,'2023-11-20','2023-12-20');
- 
- 
-create table electricity_Usage(
-
-usageId int primary key,
-
-meterId int,
-
-usage_Units numeric(8,2) check (usage_Units >= 0),
-
-reading_Date date not null,
-
-foreign key (meterId) references meter_Table(meterId) on delete cascade
-
-);
- 
-insert into electricity_usage values
-
-(1001,101,350.50,'2023-02-02'),
-
-(1002,102,410.75,'2023-02-22'),
-
-(1003,103,380.30,'2024-09-19'),
-
-(1004,104,420.00,'2022-01-08'),
-
-(1005,105,510.76,'2019-08-03'),
-
-(1006,106,1150.50,'2021-04-15'),
-
-(1007,107,859.14,'2025-10-07'),
-
-(1008,108,1348.56,'2020-03-01'),
-
-(1009,109,827.12,'2022-03-20'),
-
-(1010,110,1592.45,'2023-12-21');
- 
-insert into electricity_usage values(2002, 101, 420.75, '2023-04-02');
- 
- 
-create table bill(
-
-billId int primary key,
-
-meterId int,
-
-bill_Date date not null,
-
-amount_Due decimal(10,2) check (amount_Due >= 0),
-
-due_Date date not null,
-
-paid int default 0 check (paid in (0, 1)),
-
-foreign key (meterId) references meter_Table(meterId) on delete cascade
-
-);
- 
-insert into bill values 
-
-(501, 101, '2023-02-03',850.00,'2023-03-03', true),
-
-(502, 102, '2023-02-24',1250.00,'2023-03-24', true),
-
-(503, 103, '2024-09-20',990.70,'2024-10-20', false),
-
-(504, 104, '2022-01-08',1200.00,'2022-02-08', true),
-
-(505, 105, '2019-08-04',1400.00,'2019-09-04', true),
-
-(506, 106, '2021-04-16',1320.00,'2021-05-16', true),
-
-(507, 107, '2025-10-08',980.00,'2025-11-08', true),
-
-(508, 108, '2020-03-02',754.00,'2020-04-02', false),
-
-(509, 109, '2022-03-22',501.00,'2022-04-22', true),
-
-(510, 110, '2023-12-22',1021.00,'2024-01-22', true);
- 
-select * from bill;
-
-insert into bill values(511, 108,'2020-03-02',006.00,'2020-04-03',false);
- 
-create table payment(
-
-paymentId int primary key,
-
-billId int,
-
-payment_Date date not null,
-
-amount_Paid decimal(10,2) check (amount_Paid >= 0),
-
-foreign key (billId) references bill(billId) on delete cascade
-
-);
- 
-insert into payment values
-
-(9001, 502, '2023-03-20',1250.00),
-
-(9002, 504, '2022-02-05',1200.00),
-
-(9003, 505, '2019-09-01',1400.00),
-
-(9004, 501, '2023-03-01',850.00),
-
-(9005, 509, '2022-04-21',501.00),
-
-(9006, 510, '2024-01-19',1021.00),
-
-(9007, 506, '2021-05-15',1320.00),
-
-(9008, 503, '2024-10-22',900.00),
-
-(9009, 507, '2023-03-01',980.00),
-
-(9010, 508, '2020-04-05',720.00);
- 
- 
--- fetch the records of all the above tables -- 
-
-SELECT 
-
-    c.customerId,
-
-    c.customer_Name,
-
-    c.customer_Address,
-
-    m.meterId,
-
-    m.installation_Date,
-
-    m.last_Reading_Date,
-
-    e.usageId,
-
-    e.usage_Units,
-
-    e.reading_Date,
-
-    b.billId,
-
-    b.bill_Date,
-
-    b.amount_Due,
-
-    b.due_Date,
-
-    b.paid,
-
-    p.paymentId,
-
-    p.payment_Date,
-
-    p.amount_Paid
-
-FROM customer_Table c
-
-JOIN meter_Table m ON c.customerId = m.customerId
-
-JOIN electricity_Usage e ON m.meterId = e.meterId
-
-JOIN bill b ON m.meterId = b.meterId
-
-JOIN payment p ON b.billId = p.billId
-
-ORDER BY c.customerId;
- 
--- total electricity usage per meter, only for meters with usage greater than 200 units
-
-select meterId, sum(Usage_Units) as total_Usage
-
-from electricity_Usage e
-
-group by e.meterId
-
-having (total_Usage) > 200;
- 
--- list customer and their total unpaid bill amount, order by amount due in descending
-
-select c.customerId, c.customer_Name, sum(b.amount_Due) as total_unpaid_amount
-
-from customer_Table c
-
-join meter_Table m on c.customerId = m.customerId
-
-join bill b on m.meterId = b.meterId
-
-where b.paid = 0 
-
-GROUP BY c.customerId, c.customer_Name
-
-order by total_unpaid_amount desc;
- 
--- all bills along with payment status, sorted by billdate in ascending order -- 
-
-select billId, paid ,
-
-case 
-
-	when b.paid = 1 then 'PAID'
-
-	else 'UNPAID'
-
-end as payment_Status
-
-from bill b 
-
-order by bill_Date;
- 
- 
--- all customers who have atleast one meter installed after '2023-12-31' --
- 
-select * from customer_Table c
-
-join meter_Table m on c.customerId = m.customerId
-
-where m.installation_Date > '2023-12-31';
- 
- 
--- to show meters with their last reading date and the total usage units in descending order --
-
-select m.meterId, m.last_Reading_Date, sum(e.usage_Units) as total_Usage
-
-from meter_Table m
-
-join electricity_Usage e on m.meterId = e.meterId 
-
-group by m.meterId, m.last_Reading_Date
-
-order by total_Usage desc;
- 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 create database mini_project;
 use mini_project;
 
@@ -519,52 +201,43 @@ INSERT INTO payment VALUES
 (515, 424, '2025-01-15', 300.400),   
 (516, 426, '2025-04-15', 200.950); 
 
+
+-- To fetch all details --
 SELECT 
     c.customerId,
-    c.customer_Name,
-    c.customer_Address,
-    c.phone_No,
-    c.email,
+    c.customer_Name,c.customer_Address,c.phone_No,c.email,
 
-    m.meterId,
-    m.installation_date,
-    m.last_reading_date,
+m.meterId,m.installation_date,m.last_reading_date,
 
-    e.usageId,
-    e.reading_date,
-    e.usage_units,
+    e.usageId,e.reading_date,e.usage_units,
 
-    b.billId,
-    b.bill_date,
-    b.amount_due,
-    b.paid,
-    b.due_date,
+    b.billId,b.bill_date,b.amount_due,b.paid,b.due_date,
 
     p.paymentId,
     p.payment_date,
     p.amount_paid
 
 FROM customer c
-JOIN meter m ON c.customerId = m.customerId
-JOIN electricity_usage e ON m.meterId = e.meterId
-JOIN bill b ON m.meterId = b.meterId
-JOIN payment p ON b.billId = p.billId;
+JOIN meter m ON c.customerId = m.customerId JOIN electricity_usage e ON m.meterId = e.meterId
+JOIN bill b ON m.meterId = b.meterId JOIN payment p ON b.billId = p.billId;
 
---
+
+-- To get electricity usage over 200 --
 SELECT 
-    e.meterId,
-    SUM(e.usage_units) AS total_usage
-FROM electricity_usage e
-GROUP BY e.meterId
-HAVING total_usage > 200;
---
+    meterId,
+    SUM(usage_units) AS total_usage FROM electricity_usage 
+GROUP BY meterId
+having total_usage > 200;
+
+
+-- Unpaid customers in descnding order based on amount --
 SELECT 
     c.customerId,
     c.customer_Name,
     SUM(b.amount_due) AS total_unpaid_amount
 FROM customer c
 JOIN meter m ON c.customerId = m.customerId
-JOIN bill b ON m.meterId = b.meterId
+join bill b ON m.meterId = b.meterId
 WHERE b.paid = 0
 GROUP BY c.customerId, c.customer_Name
 ORDER BY total_unpaid_amount DESC;
@@ -575,31 +248,29 @@ SELECT
     b.bill_date,
     b.paid,
     CASE 
-        WHEN b.paid = 1 THEN 'PAID'
-        ELSE 'UNPAID'
+	WHEN b.paid = 1 THEN 'PAID'
+ELSE 'UNPAID'
     END AS payment_status
 FROM bill b
 ORDER BY b.bill_date;
---
 
+-- To get customer details who have installed meter after 2023-12-31 --
 SELECT 
-    c.customerId,
-    c.customer_Name,
-    c.customer_Address,
-    m.meterId,
-    m.installation_date
+    c.customerId,c.customer_Name,c.customer_Address,m.meterId,m.installation_date
 FROM customer c
 JOIN meter m ON c.customerId = m.customerId
 WHERE m.installation_date > '2023-12-31';
---
+
+
+-- To show meters with last reading date and total usage in descending order of usage --
 SELECT 
-    m.meterId,
-    m.last_reading_date,
+    m.meterId,m.last_reading_date,
     SUM(e.usage_units) AS total_usage
 FROM meter m
 JOIN electricity_usage e ON m.meterId = e.meterId
-GROUP BY m.meterId, m.last_reading_date
+GROUP BY m.meterId
 ORDER BY total_usage DESC;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////
 create database javaproject;
 use javaproject;
