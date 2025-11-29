@@ -1,0 +1,10 @@
+com\project\VehicleTax.class
+com\project\PropertyDAO.class
+com\project\AddProperty.class
+com\project\DbConnect.class
+com\project\Main.class
+com\project\DisplayProperty.class
+com\project\CalculateProperty.class
+com\project\PropertyTax.class
+com\project\Read.class
+com\project\Tax.class
