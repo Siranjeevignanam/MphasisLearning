@@ -1,0 +1,1 @@
+<form method='post' action='/AdminLoginServlet'><input name='username'/><input name='password'/><button>Login</button></form>

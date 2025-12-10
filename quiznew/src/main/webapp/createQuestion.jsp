@@ -1,0 +1,1 @@
+<form method='post' action='CreateQuestionServlet'>Q:<input name='q'/>O1:<input name='o1'/>O2:<input name='o2'/>O3:<input name='o3'/>O4:<input name='o4'/>Ans:<input name='ans'/><button>Save</button></form>
