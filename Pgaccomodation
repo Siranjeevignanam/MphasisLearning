@@ -37,3 +37,16 @@ CREATE TABLE pg_place (
     FOREIGN KEY (city_id) REFERENCES city(city_id),
     FOREIGN KEY (locality_id) REFERENCES locality(locality_id)
 );
+
+
+
+spring.datasource.url=jdbc:mysql://localhost:3306/pg_accommodation
+spring.datasource.username=root
+spring.datasource.password=yourpassword
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+
+server.port=8085
+
