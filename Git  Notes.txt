@@ -62,4 +62,25 @@ Ans: No, To integrate multiple codes(if multiple team members are working on the
 **Note**
  Design a branching strategy for your project
  Difference between pull and rebase
+
  if the branch is not switched and the code is edited, how do you rework--Git stash,git switch branch_name,git stash pop...stash allows us to temporarily store the changes in a safe box and gives it back when stash pop command used.
+
+
+
+
+
+
+
+
+INSERT INTO Owner (name, mobile, email, age) VALUES
+('Ramesh Kumar', '9876543210', 'ramesh@example.com', '45'),
+('Priya Sharma', '9123456780', 'priya@example.com', '38'),
+('Arun Nair', '9988776655', 'arun@example.com', '50');
+
+-- Insert PGs
+INSERT INTO Pg (name, city, locality, rent,available, owner_id) VALUES
+('Sunrise PG', 'Chennai', 'Velachery', 8000,false, 1),
+('Comfort Stay', 'Chennai', 'T Nagar', 9500,true, 1),
+('Happy Homes', 'Bangalore', 'Whitefield', 10000,true, 2),
+('Budget PG', 'Chennai', 'Guindy', 7000,true, 3),
+('Elite PG', 'Hyderabad', 'Madhapur', 12000,false, 2);
