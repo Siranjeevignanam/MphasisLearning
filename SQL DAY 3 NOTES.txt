@@ -1,43 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { InsuranceService } from '../../services/insurance.service';
-import { Plan } from '../../models/plan.model';
+<h2 class="mb-4">Available Insurance Plans</h2>
 
-@Component({
-  selector: 'app-plans',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './plans.component.html'
-})
-export class PlansComponent implements OnInit {
+<div *ngIf="loading" class="text-center">
+  <div class="spinner-border text-primary"></div>
+</div>
 
-  plans: Plan[] = [];
-  loading = true;
-
-  constructor(
-    private insuranceService: InsuranceService,
-    private router: Router
-  ) {}
-
-  ngOnInit(): void {
-    this.insuranceService.getAllPlans().subscribe({
-      next: (data) => {
-        this.plans = data;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
-  }
-
-  buyNow(planId: number) {
-    this.router.navigate(['/questions', planId]);
-  }
-}
-
+<div class="row" *ngIf="!loading">
+  <div class="col-md-6 mb-4" *ngFor="let plan of plans">
+    <div class="card h-100 shadow">
+      <div class="card-body">
+        <h5 class="card-title">{{ plan.planName }}</h5>
+        <p class="card-text">{{ plan.description }}</p>
+        <p><strong>Base Amount:</strong> ₹{{ plan.baseAmt }}</p>
+        <p><strong>Validity:</strong> {{ plan.validity }} days</p>
+      </div>
+      <div class="card-footer text-end">
+        <button class="btn btn-success" (click)="buyNow(plan.planId)">
+          Buy Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -388,6 +371,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
