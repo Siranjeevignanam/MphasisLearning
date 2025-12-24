@@ -1,3 +1,28 @@
+
+{
+  "name": "Justin",
+  "city": "Chennai",
+  "phone": "2780808989",
+  "email": "hello@gmail.com",
+  "age": 35,
+  "planId": 1,
+  "planName": "Care Life Plan",
+  "validity": 30,
+  "paymentMode": "credit card",
+  "cardNumber": "7890-3223-7778",
+  "premiumAmt": 4500,
+  "paymentFreq": "yearly"
+}
+
+
+
+
+
+
+
+
+
+
 create database MphasisLearning;
 show databases;
 use mphasislearning;
@@ -300,3 +325,4 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
