@@ -277,10 +277,26 @@ end //
 
 delimiter ;
 drop trigger yestrigger;
-delete from student where roll=3;
-select user 
+delete from student where roll=3delete from student w
 
 
 
-
- 
+{
+  "plans": [
+    {
+      "planId": 1,
+      "planName": "Care Life Plan",
+      "description": "The Care Life Plan safeguards you from unforeseen circumstances by providing instant coverage with no waiting period. Emergency services such as immediate ambulance, specialist consultation and complete assistance are its major features.",
+      "baseAmt": 2500,
+      "validity": 15
+    },
+    {
+      "planId": 2,
+      "planName": "Good Health Plan",
+      "description": "The Good Health Plan is our best selling plan. Facilities like Air Ambulance and Buy Now and Pay Later options make it a stand out in the industry.",
+      "baseAmt": 2500,
+      "validity": 30
+    }
+  ],
+  "bookings": []
+}
