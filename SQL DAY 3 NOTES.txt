@@ -1,17 +1,30 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Plan } from '../models/plan.model';
 
-import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+@Injectable({
+  providedIn: 'root'
+})
+export class InsuranceService {
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideBrowserGlobalErrorListeners(),
-    provideRouter(routes), provideClientHydration(withEventReplay()),
-    provideHttpClient()
-  ]
-};
+  private baseUrl = 'http://localhost:3333';
+
+  constructor(private http: HttpClient) {}
+
+  getAllPlans(): Observable<Plan[]> {
+    return this.http.get<Plan[]>(`${this.baseUrl}/plans`);
+  }
+
+  getPlanById(planId: number): Observable<Plan[]> {
+    return this.http.get<Plan[]>(`${this.baseUrl}/plans?planId=${planId}`);
+  }
+
+  bookInsurance(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/bookings`, data);
+  }
+}
+
 
 {
   "name": "Justin",
@@ -360,6 +373,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
