@@ -1,9 +1,8 @@
-
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { InsuranceService } from '../service/insurance.service'; 
+import { InsuranceService } from '../service/insurance.service';
 import { Plan } from '../model/plan';
 
 @Component({
@@ -12,14 +11,24 @@ import { Plan } from '../model/plan';
   imports: [CommonModule, FormsModule],
   templateUrl: './questions.html'
 })
-export class Questions {
+export class Questions implements OnInit {
 
+  // 🔹 Plan
   plan!: Plan;
+
+  // 🔹 User inputs
+  name!: string;
+  city!: string;
+  phone!: string;
+  email!: string;
   age!: number;
   income!: number;
+
   disease = false;
   smoker = false;
-  premium = 0;
+
+  // 🔹 Calculated premium
+  premiumAmount = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -27,16 +36,16 @@ export class Questions {
     private insuranceService: InsuranceService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const planId = Number(this.route.snapshot.paramMap.get('planId'));
 
-    this.insuranceService.getPlanById(planId).subscribe(plan => {
-      this.plan = plan[0];
+    this.insuranceService.getPlanById(planId).subscribe(plans => {
+      this.plan = plans[0];
     });
   }
 
-  calculatePremium() {
-    if (!this.plan) return;
+  calculatePremium(): void {
+    if (!this.plan || !this.age || !this.income) return;
 
     let amount = this.plan.baseAmt;
 
@@ -45,35 +54,30 @@ export class Questions {
     if (this.disease) amount += amount * 0.30;
     if (this.smoker) amount += amount * 0.25;
 
-    this.premium = Math.round(amount);
+    this.premiumAmount = Math.round(amount);
   }
 
-// 
+  proceedToPayment(): void {
+    const bookingData = {
+      name: this.name,
+      city: this.city,
+      phone: this.phone,
+      email: this.email,
+      age: this.age,
+      planId: this.plan.planId,
+      planName: this.plan.planName,
+      validity: this.plan.validity,
+      premiumAmt: this.premiumAmount
+    };
 
-proceedToPayment() {
-  this.router.navigate(['/payment'], {
-    state: {
-      bookingData: {
-        name: this.name,
-        city: this.city,
-        phone: this.phone,
-        email: this.email,
-        age: this.age,
-        planId: this.plan.planId,
-        planName: this.plan.planName,
-        validity: this.plan.validity,
-        premiumAmt: this.premiumAmount
-      }
-    }
-  });
+    console.log('Booking Data:', bookingData);
+
+    this.router.navigate(['/payment'], {
+      state: { bookingData }
+    });
+  }
 }
 
-
-
-
-
-
-bookingData: any;
 
 ngOnInit() {
   this.bookingData = history.state.bookingData;
@@ -459,6 +463,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
