@@ -6,4 +6,86 @@ View all Plans http://localhost:3333/plans GET: The response should contain the 
 Response 1: [ { “planId”: 1, "planName": “Care Life Plan”, “description”: “The Care Life Plan safeguards you from unforeseen circumstances by providing instant coverage with no waiting period. Emergency services such as immediate ambulance, specialist consultation and complete assistance are its major features.”, “baseAmt”: 2500, }, { “planId”: 2, "planName": ”Good Health Plan”, “description”: “The Good Health Plan is our best-selling plan. Facilities like Air Ambulance and Buy Now and Pay Later options to make it a stand out in the industry.”, “baseAmt”: 2500 } ] Response 2: { “planId”: 1, "planName": ”Care Life Plan”, “description”: “The Care Life Plan safeguards you from unforeseen circumstances by providing instant coverage with no waiting period. Emergency services such as immediate ambulance, specialist consultation, and complete assistance are its major features.”, “baseAmt”: 2500, } Request Body 3: {  } "name":"Justin", “city”:”Chennai”, “phone”:”2780808989”, "email":"hello@gmail.com", "age":"35", “planId”:1, "planName": “Care Life Plan”, “validity”: 30, “paymentMode”: “credit card”, “cardNumber”: “7890-3223-7778”, “premiumAmt”: 4500, “paymentFreq”: “yearly” Technology Specifications: The following technologies are used in the development of this application: ● HTML ● Bootstrap ● TypeScript ● Angular ● JSON Server Setting up the JSON server: ● Run the npm install json-server command in your project directory ● Create the db.json file in the same directory to read and write the data ● Run the npx json-server —watch -p 3333 db.json command to start the JSON server ● Provide db.json with dummy data for insurance plans to set up the JSON server    The sample dummy data is shown below: {   "plans": [     {       "planId": 1,       "planName": "Care Life Plan",     "description": "The Care Life Plan safeguards you from unforeseen circumstances by providing instant coverage with no waiting period. Emergency services such as immediate ambulance, specialist consultation and complete assistance are its major features.",       "baseAmt": 2500,       "validity": 15     },     {       "planId": 2,       "planName": "Good Health Plan",       "description": "The Good Health Plan is our best selling plan. Facilities like Air Ambulance and Buy Now and Pay Later options make it a stand out in the industry.",       "baseAmt": 2500,       "validity": 30     }   ],       "bookings": [     {       "id": 1,       "name": "Justin",       "city": "Chennai",       "phone": "2780808989",       "email": "hello@gmail.com",       "age": "35",       “planId”: 2,       "planName": "Good Health Plan",       "validity": 30,       "paymentMode": "credit card",       "cardNumber": "7890-3223-7778",       "premiumAmt": 2500,       "paymentFreq": "yearly"     },     {       "id": 2       "name": "Ravi Kumar",       "city": "Faridabad",       "phone": "+919899999990",       "email": "test@gmail.com",       "age": 22,       “planId”: 1,       "planName": "Care Life Plan",       "validity": "2023-12-11",       "paymentMode": "Credit Card", "cardNumber": "1110-1212-2394", "premiumAmt": 2500, "paymentFreq": "Half Yearly", } ] } 
 
 
+
 Validation (Frontend/Backend): The application must undergo the following validations: ● Implement validation checks at relevant places. ● For example, age should not be negative, contact number should be of 10 digits, email ID should be valid, and so on. ● Additional validation checks may be added as per general understanding. Business logic/exceptional scenarios:  The application shall have the following exception scenarios: ● The user must input the relevant details before submitting a request to buy an insurance plan. The submit button should be disabled until all the mandatory fields have been provided. ● Other exception scenarios may be added as per general understanding. The following requirements should be met: Ensure you have accomplished the following by the end of your application completion: ● Create an attractive and appealing user interface for buying insurance plans ● Check if all the planned business functionalities work as expected ● Ensure that the JSON server is set up properly to facilitate access and storage of data The application should not close, exit, or throw an unhandled exception if the user specifies invalid input. 
+
+
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { InsuranceService } from '../service/insurance.service';
+import { Plan } from '../model/plan';
+
+@Component({
+  selector: 'app-questions',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './questions.html'
+})
+export class Questions implements OnInit {
+
+  // 🔹 Plan
+  plan!: Plan;
+
+  // 🔹 User inputs
+  name!: string;
+  city!: string;
+  phone!: string;
+  email!: string;
+  age!: number;
+  income!: number;
+
+  disease = false;
+  smoker = false;
+
+  // 🔹 Calculated premium
+  premiumAmount = 0;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private insuranceService: InsuranceService
+  ) {}
+
+  ngOnInit(): void {
+    const planId = Number(this.route.snapshot.paramMap.get('planId'));
+
+    this.insuranceService.getPlanById(planId).subscribe(plans => {
+      this.plan = plans[0];
+    });
+  }
+
+  calculatePremium(): void {
+    if (!this.plan || !this.age || !this.income) return;
+
+    let amount = this.plan.baseAmt;
+
+    if (this.age > 45) amount += amount * 0.20;
+    if (this.income > 1000000) amount += amount * 0.10;
+    if (this.disease) amount += amount * 0.30;
+    if (this.smoker) amount += amount * 0.25;
+
+    this.premiumAmount = Math.round(amount);
+  }
+
+  proceedToPayment(): void {
+    const bookingData = {
+      name: this.name,
+      city: this.city,
+      phone: this.phone,
+      email: this.email,
+      age: this.age,
+      planId: this.plan.planId,
+      planName: this.plan.planName,
+      validity: this.plan.validity,
+      premiumAmt: this.premiumAmount
+    };
+
+    console.log('Booking Data:', bookingData);
+
+    this.router.navigate(['/payment'], {
+      state: { bookingData }
+    });
+  }
+}
