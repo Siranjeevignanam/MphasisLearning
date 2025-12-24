@@ -1,26 +1,89 @@
-<h2 class="mb-4">Available Insurance Plans</h2>
+<h2>{{ plan?.planName }}</h2>
 
-<div *ngIf="loading" class="text-center">
-  <div class="spinner-border text-primary"></div>
-</div>
+<label>Age:</label>
+<input type="number" [(ngModel)]="age" (change)="calculatePremium()" />
 
-<div class="row" *ngIf="!loading">
-  <div class="col-md-6 mb-4" *ngFor="let plan of plans">
-    <div class="card h-100 shadow">
-      <div class="card-body">
-        <h5 class="card-title">{{ plan.planName }}</h5>
-        <p class="card-text">{{ plan.description }}</p>
-        <p><strong>Base Amount:</strong> ₹{{ plan.baseAmt }}</p>
-        <p><strong>Validity:</strong> {{ plan.validity }} days</p>
-      </div>
-      <div class="card-footer text-end">
-        <button class="btn btn-success" (click)="buyNow(plan.planId)">
-          Buy Now
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<label>Annual Income:</label>
+<input type="number" [(ngModel)]="income" (change)="calculatePremium()" />
+
+<label>
+  <input type="checkbox" [(ngModel)]="disease" (change)="calculatePremium()" />
+  Existing Disease
+</label>
+
+<label>
+  <input type="checkbox" [(ngModel)]="smoker" (change)="calculatePremium()" />
+  Smoker
+</label>
+
+<h3 *ngIf="premium > 0">Premium: ₹{{ premium }}</h3>
+
+<button 
+  [disabled]="premium === 0"
+  (click)="proceedToPayment()">
+  Proceed to Payment
+</button>
+
+
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { InsuranceService } from '../../services/insurance.service';
+import { Plan } from '../../models/plan';
+
+@Component({
+  selector: 'app-questions',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './questions.component.html'
+})
+export class QuestionsComponent {
+
+  plan!: Plan;
+  age!: number;
+  income!: number;
+  disease = false;
+  smoker = false;
+  premium = 0;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private insuranceService: InsuranceService
+  ) {}
+
+  ngOnInit() {
+    const planId = Number(this.route.snapshot.paramMap.get('planId'));
+
+    this.insuranceService.getPlanById(planId).subscribe(plan => {
+      this.plan = plan;
+    });
+  }
+
+  calculatePremium() {
+    if (!this.plan) return;
+
+    let amount = this.plan.baseAmt;
+
+    if (this.age > 45) amount += amount * 0.20;
+    if (this.income > 1000000) amount += amount * 0.10;
+    if (this.disease) amount += amount * 0.30;
+    if (this.smoker) amount += amount * 0.25;
+
+    this.premium = Math.round(amount);
+  }
+
+  proceedToPayment() {
+    this.router.navigate(['/payment'], {
+      state: {
+        plan: this.plan,
+        premium: this.premium
+      }
+    });
+  }
+}
+
 
 
 
@@ -371,6 +434,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
