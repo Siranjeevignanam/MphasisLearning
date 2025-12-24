@@ -26,6 +26,7 @@ export class InsuranceService {
 }
 
 
+
 {
   "name": "Justin",
   "city": "Chennai",
@@ -373,6 +374,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
