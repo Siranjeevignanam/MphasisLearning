@@ -1,29 +1,43 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Plan } from '../models/plan.model';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { InsuranceService } from '../../services/insurance.service';
+import { Plan } from '../../models/plan.model';
 
-@Injectable({
-  providedIn: 'root'
+@Component({
+  selector: 'app-plans',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './plans.component.html'
 })
-export class InsuranceService {
+export class PlansComponent implements OnInit {
 
-  private baseUrl = 'http://localhost:3333';
+  plans: Plan[] = [];
+  loading = true;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private insuranceService: InsuranceService,
+    private router: Router
+  ) {}
 
-  getAllPlans(): Observable<Plan[]> {
-    return this.http.get<Plan[]>(`${this.baseUrl}/plans`);
+  ngOnInit(): void {
+    this.insuranceService.getAllPlans().subscribe({
+      next: (data) => {
+        this.plans = data;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.loading = false;
+      }
+    });
   }
 
-  getPlanById(planId: number): Observable<Plan[]> {
-    return this.http.get<Plan[]>(`${this.baseUrl}/plans?planId=${planId}`);
-  }
-
-  bookInsurance(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/bookings`, data);
+  buyNow(planId: number) {
+    this.router.navigate(['/questions', planId]);
   }
 }
+
 
 
 
@@ -374,6 +388,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
