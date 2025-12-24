@@ -1,4 +1,55 @@
 
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { InsuranceService } from '../service/insurance.service'; 
+import { Plan } from '../model/plan';
+
+@Component({
+  selector: 'app-questions',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './questions.html'
+})
+export class Questions {
+
+  plan!: Plan;
+  age!: number;
+  income!: number;
+  disease = false;
+  smoker = false;
+  premium = 0;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private insuranceService: InsuranceService
+  ) {}
+
+  ngOnInit() {
+    const planId = Number(this.route.snapshot.paramMap.get('planId'));
+
+    this.insuranceService.getPlanById(planId).subscribe(plan => {
+      this.plan = plan[0];
+    });
+  }
+
+  calculatePremium() {
+    if (!this.plan) return;
+
+    let amount = this.plan.baseAmt;
+
+    if (this.age > 45) amount += amount * 0.20;
+    if (this.income > 1000000) amount += amount * 0.10;
+    if (this.disease) amount += amount * 0.30;
+    if (this.smoker) amount += amount * 0.25;
+
+    this.premium = Math.round(amount);
+  }
+
+// 
+
 proceedToPayment() {
   this.router.navigate(['/payment'], {
     state: {
@@ -16,6 +67,10 @@ proceedToPayment() {
     }
   });
 }
+
+
+
+
 
 
 bookingData: any;
@@ -404,6 +459,7 @@ delete from student where roll=3delete from student w
   ],
   "bookings": []
 }
+
 
 
 
